@@ -7,7 +7,7 @@ url = f"http://{OLLAMA_HOST}:{OLLAMA_PORT}/api/generate"
 
 MODEL_NAME = "llama3.2:3b"
 
-print('Start the dialog!\nEnd dialog: type \'/stop\' or Ctrl+C')
+print('Start the dialog!\nEnd dialog: type \'/exit\' or Ctrl+C')
 prompt = input('You: ')
 while prompt != '/exit':
     params = {
@@ -18,10 +18,10 @@ while prompt != '/exit':
     with requests.post(url, json=params, stream=True) as response:
         response.raise_for_status()
         print(f'{MODEL_NAME}: ', end='')
-        for chunk in response.iter_content(chunk_size=256):
+        for chunk in response.iter_lines():
             try:
                 chunk = json.loads(chunk)
-                print(chunk['response'], end='')
+                print(chunk['response'], end='', flush=True)
             except JSONDecodeError as ex:
                 pass
         print()
