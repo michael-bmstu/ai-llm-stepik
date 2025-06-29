@@ -1,6 +1,6 @@
 import json
 import requests
-from conifg import OLLAMA_HOST, OLLAMA_PORT
+from config import OLLAMA_HOST, OLLAMA_PORT
 
 
 url = f"http://{OLLAMA_HOST}:{OLLAMA_PORT}/api/tags"
