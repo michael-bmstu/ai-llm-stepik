@@ -2,8 +2,8 @@ from openai import OpenAI
 from config import mistral_params
 
 client = OpenAI(
-    api_key=mistral_params['api'], 
-    base_url=mistral_params['url']
+    api_key=mistral_params['api_key'], 
+    base_url=mistral_params['base_url']
     )
 MODEL_NAME = "mistral-small-latest"
 
