@@ -4,7 +4,7 @@ import requests
 from config import OLLAMA_HOST, OLLAMA_PORT
 
 MODEL_NAME = "llama3.2:3b"
-MODE = 'chat'
+MODE = "chat"
 
 url_api = f"http://{OLLAMA_HOST}:{OLLAMA_PORT}/api/"
 
@@ -37,7 +37,7 @@ while True:
                 try:
                     line = json.loads(line)
                     answer += line["message"]["content"]
-                    print(line["message"]["content"], end='', flush=True)
+                    print(line["message"]["content"], end="", flush=True)
                 except JSONDecodeError as e:
                     pass
             print()

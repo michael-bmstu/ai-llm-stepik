@@ -2,8 +2,8 @@ from openai import OpenAI
 from config import ollama_params
 
 client = OpenAI(
-    api_key=ollama_params['api_key'],
-    base_url=ollama_params['base_url']
+    api_key=ollama_params["api_key"],
+    base_url=ollama_params["base_url"]
 )
 MODEL_NAME = "llama3.2:3b"
 
