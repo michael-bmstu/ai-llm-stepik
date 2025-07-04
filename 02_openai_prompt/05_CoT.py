@@ -8,17 +8,14 @@ client = OpenAI(
 MODEL_NAME = "mistral-small-latest"
 
 system_prompt = """\
-Classify the text into neutral, negative or positive
+Solve the task by following the examples below.
 Examples:
-1) Text: Wow that movie was rad!
-AI: positive
-2) Text: He is so bad!
-AI: negative
-
-Text:\
+1) Task: The odd numbers in this group add up to an even number: 4, 8, 9, 15, 12, 2, 1.
+Assistant: Adding all the odd numbers (9, 15, 1) gives 25. The answer is False.
+2) Task: The odd numbers in this group add up to an even number: 16,  11, 14, 4, 8, 13, 24.
+Assistant: Adding all the odd numbers (11, 13) gives 24. The answer is True.\
 """
-
-user_message = "I think the vacation is okay."
+user_message = "Task: The odd numbers in this group add up to an even number: 17,  10, 19, 4, 8, 12, 24"
 
 chat_completion = client.chat.completions.create(
     messages=[

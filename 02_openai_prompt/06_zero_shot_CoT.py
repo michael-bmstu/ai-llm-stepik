@@ -5,31 +5,19 @@ client = OpenAI(
     api_key=mistral_params["api_key"],
     base_url=mistral_params["base_url"]
 )
+
 MODEL_NAME = "mistral-small-latest"
 
-system_prompt = """\
-Classify the text into neutral, negative or positive
-Examples:
-1) Text: Wow that movie was rad!
-AI: positive
-2) Text: He is so bad!
-AI: negative
-
-Text:\
+message = """\
+Solve the task. Think step by step and give answer in format "Answer is True or False"
+Task: Check if the odd numbers in this group add up to an even number: 17,  10, 19, 4, 8, 12, 24\
 """
-
-user_message = "I think the vacation is okay."
-
 chat_completion = client.chat.completions.create(
     messages=[
         {
             "role": "system",
-            "content": system_prompt,
+            "content": message,
         },
-        {
-            "role": "user",
-            "content": user_message
-        }
     ],
     model=MODEL_NAME,
     temperature=0.1
