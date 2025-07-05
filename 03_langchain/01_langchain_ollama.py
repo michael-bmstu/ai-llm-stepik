@@ -19,6 +19,7 @@ while True:
     if message.lower() in ("stop", "стоп"):
         break
     history = [system_prompt, HumanMessage(content=message)]
+    print("AI translation:")
     for chunk in llm.stream(history):
-        print(chunk.content, end="")
+        print(chunk.content, end="", flush=True)
     print()
