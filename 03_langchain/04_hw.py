@@ -17,7 +17,7 @@ def check_d(data: dict[str, float]):
 disc_runnable = RunnableLambda(lambda data: data["b"] ** 2 - 4 * data["a"] * data["c"])
 chain = RunnablePassthrough.assign(D=disc_runnable)
 check_disc_runnable = RunnableLambda(check_d)
-solve_equation_runnable = RunnableSequence(chain, check_disc_runnable) # disc_runnable | check_disc_runnable
+solve_equation_runnable = RunnableSequence(chain, check_disc_runnable) # chain | check_disc_runnable
 
 print(solve_equation_runnable.invoke(data))
 chain.get_graph().print_ascii()

@@ -30,7 +30,7 @@ while True:
     prompt_value = prompt_template.invoke({"target": target, "history": history})
     ai_translate = ""
     print("Translate: ", end="")
-    for ai_message_chunk in llm.stream(prompt_value.to_messages()):
+    for ai_message_chunk in llm.stream(prompt_value):
         print(ai_message_chunk.content, end="", flush=True)
         ai_translate += ai_message_chunk.content
         

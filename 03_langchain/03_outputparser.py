@@ -32,7 +32,7 @@ prompt_value = prompt_template.invoke(
         "user_query": "Ноутбук MSI модели 14-bm-422 8/512 SSD",
     }
 )
-parsed = llm.invoke(prompt_value.to_messages())
+parsed = llm.invoke(prompt_value)
 print("Row parsed (by llm):", parsed.content)
 print()
 print("Parsed:", parser.invoke(parsed))
