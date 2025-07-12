@@ -5,3 +5,4 @@ The folder contains examples of working with the langchain library
 2. Prompt template chatbot - custom translator
 3. Output parser Pydantic examples
 4. Runnable practice (quadratic equation)
+5. Chatbot with runnable history
