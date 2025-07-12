@@ -3,16 +3,16 @@ from langchain_core.runnables import RunnableWithMessageHistory
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.messages import trim_messages
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_mistralai import ChatMistralAI
+from langchain_ollama import ChatOllama
 from config import mistral_params
 
 chat_history = InMemoryChatMessageHistory()
 
-prompt = ChatPromptTemplate.from_messages(
+prompt = ChatPromptTemplate(
     [
         ("system", "You are a very good translator. Translate given sentence into {target} language"),
-        ("placeholder", "chat_history"),
-        ("human", "{input_question}"),
+        ("placeholder", "{chat_history}"),
+        ("human", "{input}"),
     ]
 )
 trimmer = trim_messages(
@@ -24,15 +24,14 @@ trimmer = trim_messages(
     include_system=True,
     allow_partial=False
 )
-llm = ChatMistralAI(
-    model="mistral-large-latest",
-    temperature=0.1,
-    mistral_api_key=mistral_params["api_key"]
-)
+llm = ChatOllama(
+    model="llama3.2:3b",
+    temperature=0.1,)
+
 base_chain = prompt | trimmer | llm
 chain = RunnableWithMessageHistory(
     base_chain, lambda session_id: chat_history,
-    input_messages_key="input_question",
+    input_messages_key="input",
     history_messages_key="chat_history",
 ) | StrOutputParser() # add parsing
 
@@ -51,7 +50,7 @@ while True:
     print("Translate: ", end="")
     for ai_message_chunk in chain.stream({
         "target": target,
-        "input": user_input,}, config={{"configurable": {"session_id": "unused"}}}):
-        print(ai_message_chunk.content, end="", flush=True)
+        "input": user_input,}, config={"configurable": {"session_id": "unused"}}):
+        print(ai_message_chunk, end="", flush=True)
     print()
 print("Bye, bro")
