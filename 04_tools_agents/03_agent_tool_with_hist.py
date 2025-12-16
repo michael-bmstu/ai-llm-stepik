@@ -1,11 +1,14 @@
 import time
 from langchain_core.tools import tool
-from langchain.agents import AgentExecutor, create_tool_calling_agent
+from langchain.agents import create_agent
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_mistralai import ChatMistralAI
 from langchain_core.chat_history import InMemoryChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 ORDERS_STATUSES_DATA = {
     "a42": "Доставляется",
@@ -34,23 +37,26 @@ def cancel_order(order_id: str) -> str:
 tools = [get_order_status, cancel_order]
 llm = ChatMistralAI(
     model="mistral-large-latest",
-    mistral_api_key="..."
+    mistral_api_key=os.getenv('MISTRAL_KEY')
 )
 
-prompt = ChatPromptTemplate.from_messages(
+prompt = ChatPromptTemplate(
     [
         ("system", (
             "Твоя задача отвечать на вопросы клиентов об их заказах, используя вызов инструментов."
-            "Отвечай пользователю подробно и вежлив."
+            "Отвечай пользователю подробно и вежливо."
         )),
         MessagesPlaceholder("chat_history"),
         ("human", "{input}"),
-        MessagesPlaceholder("agent_scratchpad"),
+        # MessagesPlaceholder("agent_scratchpad"),
     ]
 )
 
-agent = create_tool_calling_agent(llm, tools, prompt)
-agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
+# agent = create_tool_calling_agent(llm, tools, prompt)
+# agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
+
+agent = create_agent(llm, tools)
+agent_executor = prompt | agent
 
 memory = InMemoryChatMessageHistory()
 agent_with_history = RunnableWithMessageHistory(
@@ -58,12 +64,11 @@ agent_with_history = RunnableWithMessageHistory(
     lambda session_id: memory,
     input_messages_key="input",
     history_messages_key="chat_history",
-    output_messages_key="output"
 )
 
-config = {"configurable": {"session_id": "test-session"}}
+config = {"configurable": {"session_id": "blank"}}
 while True:
     print()
     user_question = input('You: ')
     answer = agent_with_history.invoke({"input": user_question}, config)
-    print("Bot: ", answer["output"])
+    print("Bot: ", answer['messages'][-1].content)
