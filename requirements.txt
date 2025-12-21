@@ -1,7 +1,0 @@
-requests
-openai
-langchain
-langchain-ollama
-langchain-mistralai
-pydantic
-dotenv
