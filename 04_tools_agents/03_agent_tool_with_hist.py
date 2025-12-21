@@ -2,7 +2,8 @@ import time
 from langchain_core.tools import tool
 from langchain.agents import create_agent
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_mistralai import ChatMistralAI
+# from langchain_mistralai import ChatMistralAI
+from langchain.chat_models import init_chat_model
 from langchain_core.chat_history import InMemoryChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 
@@ -35,9 +36,9 @@ def cancel_order(order_id: str) -> str:
     return "Заказ уже отменен"
 
 tools = [get_order_status, cancel_order]
-llm = ChatMistralAI(
+llm = init_chat_model(
     model="mistral-large-latest",
-    mistral_api_key=os.getenv('MISTRAL_KEY')
+    api_key=os.getenv('MISTRAL_KEY')
 )
 
 prompt = ChatPromptTemplate(
