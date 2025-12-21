@@ -19,7 +19,7 @@ class State(TypedDict):
 
 # Nodes
 def choose_resolver(state: State) -> State:
-    resolver = "support" if random.random() > 0.5 else "llm"
+    resolver = "support" if random.random() > 0.7 else "llm"
     state["resolver"] = resolver
     return state
 
@@ -55,24 +55,24 @@ builder = StateGraph(State)
 
 # Nodes
 builder.add_node("choose_resolver", choose_resolver)
-builder.add_node("support", send_to_support)
-builder.add_node("llm", send_to_llm)
+builder.add_node("send_to_supprot", send_to_support)
+builder.add_node("send_to_llm", send_to_llm)
 builder.add_node("answer_to_user", send_to_user)
 
 # Edges
 builder.add_edge(START, "choose_resolver")
 builder.add_conditional_edges("choose_resolver", route_query)
-builder.add_edge("support", END)
-builder.add_edge("llm", "answer_to_user")
+builder.add_edge("send_to_supprot", END)
+builder.add_edge("send_to_llm", "answer_to_user")
 builder.add_edge("answer_to_user", END)
 
 graph = builder.compile()
 
 # Visual
-with open("04_tools_agents", "wb") as f:
-    f.write(graph.get_graph().draw_mermaid_png())
+# with open("04_tools_agents/graph_example.png", "wb") as f:
+#     f.write(graph.get_graph().draw_mermaid_png())
 
 # Graph invoke
-res = graph.invoke({"query": "Hi, my computer is not workinf"})
+res = graph.invoke({"query": "Hi, I can't connect to DB in my department"})
 print("---" * 33)
 print(res)
