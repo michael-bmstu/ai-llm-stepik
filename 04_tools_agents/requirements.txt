@@ -3,3 +3,4 @@ langchain-mistralai
 langchain-community
 pydantic
 dotenv
+wikipedia
