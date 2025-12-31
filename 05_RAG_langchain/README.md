@@ -2,3 +2,4 @@
 
 1. Simple RAG with BM25
 2. Vanile RAG
+3. Document splitting
