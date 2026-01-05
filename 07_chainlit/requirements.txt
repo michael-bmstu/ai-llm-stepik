@@ -1,7 +1,6 @@
 langchain
 langchain-mistralai
 langchain-community
-rank_bm25
 pypdf
 dotenv
 chainlit
