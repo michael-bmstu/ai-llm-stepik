@@ -5,3 +5,5 @@ langchain-mistralai
 arize-phoenix
 openinference-instrumentation-langchain
 pypdf
+dotenv
+sentence-transformers
