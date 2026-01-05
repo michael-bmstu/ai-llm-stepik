@@ -20,7 +20,7 @@ def get_history(session_id: str) -> BaseChatMessageHistory:
 
 messages = [
     ("system", "You are an expert in {domain}. Your task is answer the question as short as possible"),
-    ("placholder", "{history}"),
+    ("placeholder", "{history}"),
     ("human", "{question}"),
 ]
 
@@ -33,4 +33,24 @@ chain = RunnableWithMessageHistory(
 
 @cl.on_message
 async def handle_message(message: cl.Message):
-    pass
+    user_session = cl.user_session.get("id")
+    question = message.content
+    msg = cl.Message(content="")
+    async for chunk in chain.astream(
+        {"domain": DOMAIN, "question": question, "history": messages}, 
+        config=RunnableConfig(configurable={"session_id": user_session})
+    ):
+        await msg.stream_token(chunk)
+    await msg.send()
+
+# TODO
+"""
+chat profile
+actions
+app settings (temperature, model)
+hello message
+"""
+
+"""
+chainlit run 07_chainlit/01_chatbot.py
+"""
