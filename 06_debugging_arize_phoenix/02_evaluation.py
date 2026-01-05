@@ -27,7 +27,7 @@ def get_output(example: Example) -> dict:
 def hallucinations_eval(input: dict, output: dict, metadata: dict) -> int:
     verdict = chain.invoke({'input': input['input'], 'reference': metadata['reference'], 'output': output['output']})
     time.sleep(1)
-    return 1 if verdict == 'factual' else 0
+    return 0 if verdict == 'factual' else 1
 
 run_experiment(dataset, get_output, evaluators=[hallucinations_eval],
                experiment_name="hallucination-v1")
