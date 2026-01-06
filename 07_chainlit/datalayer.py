@@ -1,13 +1,12 @@
 import json
 from datetime import datetime
-import chainlit as cl
-from chainlit import PersistedUser, User
+from chainlit import PersistedUser
 from chainlit.data import BaseDataLayer
 from chainlit.element import ElementDict
 from chainlit.step import StepDict
 from chainlit.types import Feedback, ThreadDict, Pagination, ThreadFilter, PaginatedResponse, PageInfo
 
-
+# Study only! Dosen't work corrcectly
 class CustomDataLayer(BaseDataLayer):
     async def build_debug_url(self) -> str:
         return ""
@@ -67,3 +66,59 @@ class CustomDataLayer(BaseDataLayer):
     async def delete_thread(self, thread_id: str) -> None:
         if thread_id in self.threads:
             del self.threads[thread_id]
+
+    async def list_threads(self, pagination: Pagination, filters: ThreadFilter) -> PaginatedResponse[ThreadDict]:
+        if not filters.userId:
+            raise ValueError("userId is required")
+        threads = [t for t in list(self.threads.values()) if t["userId"] == filters.userId]
+        start = 0
+        if pagination.cursor:
+            for i, thread in enumerate(threads):
+                if thread["id"] == pagination.cursor:
+                    start = i + 1
+                    break
+        end = start + pagination.first
+        paginated_threads = threads[start:end] or []
+        has_next_page = len(threads) > end
+        start_cursor = paginated_threads[0]["id"] if paginated_threads else None
+        end_cursor = paginated_threads[-1]["id"] if paginated_threads else None
+
+        result = PaginatedResponse(
+            pageInfo=PageInfo(hasNextPage=has_next_page, startCursor=start_cursor, endCursor=end_cursor),
+            data=paginated_threads
+        )
+        return result
+    
+    async def get_thread(self, thread_id: str) -> ThreadDict | None:
+        thread = self.threads.get(thread_id)
+        thread["steps"] = [st for st in self.steps.values() if st["threadId"] == thread_id]
+        thread["elements"] = [el for el in self.elements.values() if el["threadId"] == thread_id]
+        return thread
+    
+    async def update_thread(self, thread_id: str, name: str|None = None, user_id: str|None = None, metadata: dict|None = None, tags: list[str]|None = None):
+        if thread_id in self.threads:
+            if name:
+                self.threads[thread_id]["name"] = name
+            if user_id:
+                self.threads[thread_id]["userId"] = user_id
+            if metadata:
+                self.threads[thread_id]["metadata"] = metadata
+            if tags:
+                self.threads[thread_id]["tags"] = tags
+        else:
+            data = {
+                "id": thread_id,
+                "createdAt": (
+                    datetime.now().isoformat() + "Z" if metadata is None else None
+                ),
+                "name": (
+                    name
+                    if name is not None
+                    else (metadata.get("name") if metadata and "name" in metadata else None)
+                ),
+                "userId": user_id,
+                "userIdentifier": user_id,
+                "tags": tags,
+                "metadata": json.dumps(metadata) if metadata else None,
+            }
+            self.threads[thread_id] = data

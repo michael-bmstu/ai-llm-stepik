@@ -11,6 +11,7 @@ import chainlit as cl
 import os
 from dotenv import load_dotenv
 import time
+from datalayer import CustomDataLayer
 
 load_dotenv()
 
@@ -31,6 +32,10 @@ prompt = ChatPromptTemplate([
 # Model init
 llm = init_chat_model(model="mistral-large-latest", api_key=API_KEY)
 embeddings = init_embeddings(model="mistralai:mistral-embed", api_key=API_KEY)
+
+# @cl.data_layer
+# def get_data_layer():
+#     return CustomDataLayer()
 
 @cl.on_chat_start
 async def add_data_base():
@@ -107,7 +112,7 @@ users = [ # allowed users
 ]
 
 @cl.password_auth_callback # auth function
-async def get_user(username: str, password: str):
+async def get_user(username: str, password: str) -> cl.User|None:
     for user in users:
         if username == user.metadata["username"] and password == user.metadata["password"]:
             return user
