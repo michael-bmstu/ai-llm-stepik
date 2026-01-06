@@ -27,8 +27,9 @@ messages = [
 ]
 prompt = ChatPromptTemplate(messages)
 
-@cl.on_message
+@cl.on_message # message processing
 async def handle_message(message: cl.Message):
+    # get user's vars
     model = cl.user_session.get("model", "mistral-large-latest")
     temp = cl.user_session.get("temp", 1)
     user_session = cl.user_session.get("id")
@@ -37,6 +38,7 @@ async def handle_message(message: cl.Message):
     thanks_msg = cl.Message(content=f"Thank you fot the question, {name}!")
     await thanks_msg.send()
 
+    # define chain from settings
     llm = init_chat_model(model=model, temperature=temp, api_key=os.getenv("MISTRAL_KEY"))
     chain = RunnableWithMessageHistory(
         prompt | llm, get_session_history=get_history,
@@ -57,16 +59,17 @@ async def handle_message(message: cl.Message):
         tooltip="Send dislike for the bad answer",
     )
 
-    msg = cl.Message(content="", actions=[thanks_action, dislike])
+    msg = cl.Message(content="", actions=[thanks_action, dislike]) # create message
     async for chunk in chain.astream(
         {"domain": domain, "question": question, "history": messages}, 
         config=RunnableConfig(configurable={"session_id": user_session})
     ):
         await msg.stream_token(chunk)
 
-    await msg.send()
-    await thanks_msg.remove()
+    await msg.send() # close generation
+    await thanks_msg.remove() # remove tmp message
 
+# Actions processing
 @cl.action_callback("thanks_action")
 async def on_action(action: cl.Action):
     name = cl.user_session.get("name", "bro")
@@ -81,6 +84,7 @@ async def on_action(action: cl.Action):
     await action.remove()
     await cl.Message(content=f"Thank you for feedback, {name}!").send()
 
+# Chat profile
 @cl.set_chat_profiles
 async def chat_profile():
     return [
@@ -90,9 +94,11 @@ async def chat_profile():
             starters=[cl.Starter(label="Hello world", message="What is hello world in different domains"),],
         ),]
 
+# What program do when chat is started
 @cl.on_chat_start
 async def main_start():
-    ask = cl.AskUserMessage(content="Write your name, please")
+    # get user name, for dialogue
+    ask = cl.AskUserMessage(content="Write your name, please", timeout=20)
     res = await ask.send()
     if res:
         name = res["output"]
@@ -101,6 +107,7 @@ async def main_start():
     else:
         await ask.remove()
     
+    # define chat settings (add icon with settings to chat)
     settings = cl.ChatSettings(
         [
             Select(
@@ -121,17 +128,13 @@ async def main_start():
     )
     await settings.send()
 
-@cl.on_settings_update
+@cl.on_settings_update # process settings "confirm" button
 async def setup_chat(settings):
     cl.user_session.set("model", settings["model"])
     cl.user_session.set("domain", settings["domain"])
     cl.user_session.set("temp", settings["temp"])
 
-# TODO
 """
-hello message
-"""
-
-"""
+run command
 chainlit run 07_chainlit/01_chatbot.py -w
 """
