@@ -35,9 +35,10 @@ embeddings = init_embeddings(model="mistralai:mistral-embed", api_key=API_KEY)
 @cl.on_chat_start
 async def add_data_base():
     files = None
+    cur_user = cl.user_session.get("user")
     while not files:
         user_file = cl.AskFileMessage( # get file from user in dialogue
-            content="Please, upload the file",
+            content=f"{cur_user.display_name}, upload the file, please",
             accept=["application/pdf"],
             max_size_mb=20,
             timeout=60,
@@ -98,6 +99,20 @@ async def main(message: cl.Message):
     context_chunks = [cl.Text(content=chunk, name=f"Context fragment {i}", display="inline")
                        for i, chunk in enumerate(res["chunks"].split("\n\n"))]
     await cl.Message(content=res["answer"], elements=context_chunks).send()
+
+users = [ # allowed users
+    cl.User(identifier="1", display_name="Admin", metadata={"username": "admin", "password": "admin"}),
+    cl.User(identifier="2", display_name="Mihail", metadata={"username": "miha", "password": "solov"}),
+    cl.User(identifier="3", display_name="Dan", metadata={"username": "dan", "password": "ultra"}),
+]
+
+@cl.password_auth_callback # auth function
+async def get_user(username: str, password: str):
+    for user in users:
+        if username == user.metadata["username"] and password == user.metadata["password"]:
+            return user
+    return None
+
 
 """
 run command

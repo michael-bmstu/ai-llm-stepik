@@ -7,4 +7,6 @@ This folder contains examples UI for Chat-bot systems
     - app settings
     - actions (feedback)
 2. RAG app
-    - ...
+    - upload files
+    - user sessions
+    - authentication
