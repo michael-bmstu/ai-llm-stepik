@@ -27,18 +27,19 @@ class CreateBook(BaseModel):
 class SuccessMessage(BaseModel):
     message: str = Field(examples=["Операция успешно выполнена"])
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["sha256_crypt"], deprecated="auto")
 
+MAX_HASH_LEN = 72
 users = [
     UserDB(
         login="admin",
         is_admin=True,
-        hashed_password=pwd_context.hash("adminpass"),
+        hashed_pw=pwd_context.hash("adminpass"),
     ),
     UserDB(
         login="miha",
         is_admin=False,
-        hashed_password=pwd_context.hash("solovev"),
+        hashed_pw=pwd_context.hash("solovev"),
     ),
 ]
 
@@ -58,10 +59,10 @@ def user_from_token(token: str) -> UserDB|None:
 
 app = FastAPI()
 
-@app.post("auth/login")
+@app.post("/auth/login")
 async def auth_user(data: LoginRequest = Body()):
     user = user_from_login(data.login)
-    if not user or not pwd_context.verify(data.password, user.hashed_password):
+    if not user or not pwd_context.verify(data.pw, user.hashed_pw):
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     token = secrets.token_hex(32)
     sessions[token] = user.login
