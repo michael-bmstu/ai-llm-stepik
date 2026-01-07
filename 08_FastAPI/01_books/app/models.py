@@ -17,5 +17,5 @@ class CreateBook(BaseBook):
 class UpdateBook(BaseBook):
     pass
 
-class SucccessMessage(BaseModel):
+class SuccessMessage(BaseModel):
     message: str = Field(examples=["Операция выполнена"])
