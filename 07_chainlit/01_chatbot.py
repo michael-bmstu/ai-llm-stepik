@@ -137,4 +137,5 @@ async def setup_chat(settings):
 """
 run command
 chainlit run 07_chainlit/01_chatbot.py -w
+uv run --only-group chainlit chainlit run 07_chainlit/01_chatbot.py
 """

@@ -4,3 +4,4 @@ config.py
 .env
 .chainlit
 .files
+.venv
