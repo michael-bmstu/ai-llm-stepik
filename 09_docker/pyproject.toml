@@ -1,0 +1,8 @@
+[project]
+name = "09-docker"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.128.0",
+    "fastapi-cli>=0.0.20",
+]
