@@ -1,4 +1,5 @@
 RUN ONLY IN CMD
+- postgers SQL
 docker run --name postgres-15 
   -e POSTGRES_PASSWORD="admin" 
   -e POSTGRES_USER="admin"
@@ -8,3 +9,15 @@ docker run --name postgres-15
   postgres:15
 
   docker start postgres-15
+
+
+- postgers SQL + pgvector ext
+docker run --name postgres-pgvector-15
+  -e POSTGRES_PASSWORD=admin
+  -e POSTGRES_USER=admin
+  -e POSTGRES_DB="vector_db"
+  -p 5432:5432 
+  -v "./10_DataBase/data:/var/lib/postgresql/data"
+  -d pgvector/pgvector:pg15
+
+  docker start postgres-pgvector-15

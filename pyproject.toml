@@ -18,6 +18,9 @@ chainlit = [
 database = [
     "asyncpg>=0.31.0",
     "dotenv>=0.9.9",
+    "langchain>=1.2.1",
+    "langchain-mistralai>=1.1.1",
+    "pgvector>=0.4.2",
 ]
 fastapi = [
     "bcrypt>=5.0.0",
