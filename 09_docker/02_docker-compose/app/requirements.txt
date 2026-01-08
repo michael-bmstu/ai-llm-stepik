@@ -1,5 +1,6 @@
 fastapi
 fastapi-cli
+
 pydantic_settings
 sqlalchemy
 asyncpg

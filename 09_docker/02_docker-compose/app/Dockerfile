@@ -10,4 +10,4 @@ COPY main.py .
 
 EXPOSE 8000
 
-ENTRYPOINT ["fastapi", "run", "main.py",]
+ENTRYPOINT ["fastapi", "run", "main.py"]
