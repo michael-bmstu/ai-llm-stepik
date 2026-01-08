@@ -10,11 +10,14 @@ DATABASE_DSN = f"{os.getenv("DB_DSN_PREF")}/test_db"
 async def init_database():
     conn: asyncpg.Connection = await asyncpg.connect(DATABASE_DSN)
     try:
-        await conn.execute("""
-            CREATE TYPE transaction_type AS ENUM (
-                'u2u', 'top-up', 'llm'
-            );
-        """)
+        try:
+            await conn.execute("""
+                CREATE TYPE IF NOT EXISTS transaction_type AS ENUM (
+                    'u2u', 'top-up', 'llm'
+                );
+            """)
+        except:
+            pass
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS transactions_2 (
                 id UUID PRIMARY KEY,

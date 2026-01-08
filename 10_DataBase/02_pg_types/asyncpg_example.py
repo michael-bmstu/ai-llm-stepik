@@ -36,7 +36,7 @@ async def example():
         transaction_type = TransactionType.TOP_UP
         value = 100
         metadata = {"payment-system": "aqua-pay", "promocode": "f21a1f31"}
-        tags = ["aqua-pay"]
+        tags = ["aqua-pay", "test", "miha"]
         await conn.execute(
             "INSERT INTO transactions_2 (id, user_id, transaction_type, value, metadata, tags) VALUES($1, $2, $3, $4, $5, $6);",
             transaction_id, user_id, transaction_type, value, metadata, tags
