@@ -16,8 +16,7 @@ async def init_database():
             );
         """)
         await conn.execute("""
-            DROP TABLE IF EXISTS transactions;
-            CREATE TABLE IF NOT EXISTS transactions (
+            CREATE TABLE IF NOT EXISTS transactions_2 (
                 id UUID PRIMARY KEY,
                 user_id UUID NOT NULL,
                 transaction_type transaction_type NOT NULL,

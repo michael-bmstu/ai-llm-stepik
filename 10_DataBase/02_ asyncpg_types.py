@@ -38,10 +38,10 @@ async def example():
         metadata = {"payment-system": "aqua-pay", "promocode": "f21a1f31"}
         tags = ["aqua-pay"]
         await conn.execute(
-            "INSERT INTO transactions(id, user_id, transaction_type, value, metadata, tags) VALUES($1, $2, $3, $4, $5, $6);",
+            "INSERT INTO transactions_2 (id, user_id, transaction_type, value, metadata, tags) VALUES($1, $2, $3, $4, $5, $6);",
             transaction_id, user_id, transaction_type, value, metadata, tags
         )
-        records = await conn.fetch("SELECT * FROM transactions;")
+        records = await conn.fetch("SELECT * FROM transactions_2;")
         print(records)
     finally:
         if conn:
