@@ -15,6 +15,10 @@ chainlit = [
     "langchain-mistralai>=1.1.1",
     "pypdf>=6.5.0",
 ]
+database = [
+    "asyncpg>=0.31.0",
+    "dotenv>=0.9.9",
+]
 fastapi = [
     "bcrypt>=5.0.0",
     "fastapi[standard]>=0.128.0",

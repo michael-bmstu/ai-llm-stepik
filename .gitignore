@@ -5,3 +5,4 @@ config.py
 .chainlit
 .files
 .venv
+10_DataBase/data
