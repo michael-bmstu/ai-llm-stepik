@@ -8,6 +8,8 @@ services:
       - qdrant_data:/qdrant/storage:z
     networks:
       - my_net
+    # spam_checker:
+    #   build: ./app
 
 volumes:
   qdrant_data:

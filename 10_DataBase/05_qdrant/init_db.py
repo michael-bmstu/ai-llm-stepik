@@ -6,9 +6,9 @@ from langchain.embeddings import init_embeddings
 from langchain_qdrant import QdrantVectorStore
 from langchain_core.documents import Document
 import pandas as pd
+import time
 import os
 from dotenv import load_dotenv
-import time
 
 load_dotenv()
 
