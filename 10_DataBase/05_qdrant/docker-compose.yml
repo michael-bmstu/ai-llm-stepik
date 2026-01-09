@@ -1,0 +1,20 @@
+services:
+  qdrant:
+    image: qdrant/qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage:z
+    networks:
+      - my_net
+
+volumes:
+  qdrant_data:
+
+networks:
+  my_net:
+    driver: bridge
+
+# cd 10_DataBase/05_qdrant
+# docker-compose up
