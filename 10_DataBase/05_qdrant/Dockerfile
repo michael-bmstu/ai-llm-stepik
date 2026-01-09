@@ -4,22 +4,21 @@ WORKDIR ./app
 
 RUN pip install uv
 
-COPY procject.toml uv.lock .
+COPY pyproject.toml uv.lock ./
 
 RUN uv sync
 
-COPY init_db.py .
-RUN uv run python init_db.py
-
-COPY schema.py spam_api.py .
+COPY init_db.py spams.csv ./
+COPY schema.py spam_api.py ./
 
 EXPOSE 8000
+EXPOSE 6333
+EXPOSE 6634
 
-ENTRYPOINT ["fastapi", "run", "spam_api.py",]
+CMD ["uv", "run", "fastapi", "run", "spam_api.py"]
 
 
 # cd 10_DataBase/05_qdrant
 # uv venv
 # uv init --no-workspace --bare
-# uv add fastapi fastapi-cli
-# uv run fastapi 01_fastapi.py --host 0.0.0.0
+# uv add -r requirements.txt

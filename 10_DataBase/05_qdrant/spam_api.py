@@ -6,16 +6,16 @@ from typing import Annotated
 import qdrant_client
 from schema import Doc, QueryRequest, QueryResponse
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
+import init_db
+# from dotenv import load_dotenv
+# load_dotenv()
 
 COLLECTION_NAME = "spams"
 embeddings = init_embeddings(model="mistralai:mistral-embed", api_key=os.getenv("MISTRAL_KEY"))
 app = FastAPI()
 
 async def get_qdrant_db():
-    # client = qdrant_client.QdrantClient(url="http://localhost:6333")
+    # client = qdrant_client.QdrantClient(url="http://localhost:6333") # outside container run
     client = qdrant_client.QdrantClient(url="http://qdrant:6333")
 
     yield QdrantVectorStore(client, COLLECTION_NAME, embeddings)

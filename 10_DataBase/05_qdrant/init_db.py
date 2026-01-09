@@ -9,9 +9,8 @@ import uuid
 import pandas as pd
 import time
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 COLLECTION_NAME = "spams"
 # DATASET_PATH = "10_DataBase/05_qdrant/spams.csv"
@@ -24,7 +23,7 @@ texts = df['Message'].to_list()
 spam_facts = df["Category"].map(lambda cat: cat == "spam").to_list()
 docs = [Document(page_content=text, metadata={"is_spam": spam}, id=str(uuid.uuid4())) for text, spam in zip(texts, spam_facts)]
 
-# client = QdrantClient(url="http://localhost:6333")
+# client = QdrantClient(url="http://localhost:6333")  # outside container run
 client = QdrantClient(url="http://qdrant:6333")
 try:
     client.create_collection(COLLECTION_NAME, vectors_config=VectorParams(size=1024, distance=Distance.COSINE),)
