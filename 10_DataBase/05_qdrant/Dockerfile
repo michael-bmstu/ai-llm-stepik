@@ -12,8 +12,6 @@ COPY init_db.py spams.csv ./
 COPY schema.py spam_api.py ./
 
 EXPOSE 8000
-EXPOSE 6333
-EXPOSE 6634
 
 CMD ["uv", "run", "fastapi", "run", "spam_api.py"]
 
