@@ -1,15 +1,18 @@
 services:
   qdrant:
     image: qdrant/qdrant
-    ports:
-      - "6333:6333"
-      - "6334:6334"
+    # ports:
+    #   - "6333:6333"
+    #   - "6334:6334"
     volumes:
       - qdrant_data:/qdrant/storage:z
     networks:
       - my_net
-    # spam_checker:
-    #   build: ./app
+    spam_api:
+      ports:
+        - "8000:8000"
+      networks:
+      - my_net
 
 volumes:
   qdrant_data:

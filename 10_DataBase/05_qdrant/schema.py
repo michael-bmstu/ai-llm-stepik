@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 
 class Doc(BaseModel):
-    id: int
+    id: str
     text: str
     is_spam: bool
 

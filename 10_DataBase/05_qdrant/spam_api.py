@@ -15,15 +15,17 @@ embeddings = init_embeddings(model="mistralai:mistral-embed", api_key=os.getenv(
 app = FastAPI()
 
 async def get_qdrant_db():
-    client = qdrant_client.QdrantClient(url="http://localhost:6333")
+    # client = qdrant_client.QdrantClient(url="http://localhost:6333")
+    client = qdrant_client.QdrantClient(url="http://qdrant:6333")
+
     yield QdrantVectorStore(client, COLLECTION_NAME, embeddings)
 QdrantDB = Annotated[QdrantVectorStore, Depends(get_qdrant_db)]
 
 
 @app.post("/predict")
 async def check_spam(qdrant_db: QdrantDB, data: QueryRequest = Body()) -> QueryResponse:
-    res = await qdrant_db.asimilaryty_search(query=data.query, k=data.limit)
-    docs = [Doc(id=doc.id, is_spam=doc.metadata['is_spam'], text=doc.page_content) for doc in res]
+    res = await qdrant_db.asimilarity_search(query=data.query, k=data.limit)
+    docs = [Doc(id=doc.metadata['_id'], is_spam=doc.metadata['is_spam'], text=doc.page_content) for doc in res]
     prob = sum(doc.is_spam for doc in docs) / len(docs)
     return QueryResponse(sim_documents=docs, is_spam=prob > data.threshold, probability=prob)
 
